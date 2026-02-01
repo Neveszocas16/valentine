@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Valentine 💖</title>
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    h1 {
+      font-size: 42px;
+      color: white;
+      text-shadow: 2px 2px 5px black;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .buttons {
+      position: relative;
+      width: 420px;
+      height: 220px;
+    }
+
+    button {
+      font-size: 22px;
+      padding: 15px 35px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      position: absolute;
+    }
+
+    #yes {
+      background-color: #ff4d6d;
+      color: white;
+      left: 40px;
+      top: 90px;
+    }
+
+    #no {
+      background-color: black;
+      color: white;
+      left: 250px;
+      top: 90px;
+    }
+
+    /* Corações a cair */
+    .heart {
+      position: fixed;
+      top: -20px;
+      font-size: 22px;
+      animation: fall linear forwards;
+      pointer-events: none;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh);
+        opacity: 0;
+      }
+    }
+
+    #yesPage {
+      display: none;
+      text-align: center;
+      color: white;
+    }
+
+    #yesPage h1 {
+      font-size: 60px;
+    }
+
+    #yesPage p {
+      font-size: 26px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="main">
+    <h1>Queres ser o meu Valentine, meu amor? 💖</h1>
+
+    <div class="buttons" id="arena">
+      <button id="yes">Yes 💕</button>
+      <button id="no">No 😈</button>
+    </div>
+  </div>
+
+  <div id="yesPage">
+    <h1>YIPPEEE 💍💖</h1>
+    <p>AMO-TE MUITO MEU AMOR PERFEITO 🥰</p>
+  </div>
+
+  <!-- Sons -->
+  <audio id="alertSound">
+    <source src="alert.mp3" type="audio/mpeg">
+  </audio>
+
+  <audio id="bgMusic" loop>
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const noBtn = document.getElementById("no");
+    const yesBtn = document.getElementById("yes");
+    const arena = document.getElementById("arena");
+    const main = document.getElementById("main");
+    const yesPage = document.getElementById("yesPage");
+    const alertSound = document.getElementById("alertSound");
+    const bgMusic = document.getElementById("bgMusic");
+
+    let soundCooldown = false;
+
+    function moveNo() {
+      const arenaRect = arena.getBoundingClientRect();
+      const btnRect = noBtn.getBoundingClientRect();
+
+      const maxX = arenaRect.width - btnRect.width;
+      const maxY = arenaRect.height - btnRect.height;
+
+      noBtn.style.left = Math.random() * maxX + "px";
+      noBtn.style.top = Math.random() * maxY + "px";
+    }
+
+    document.addEventListener("mousemove", (e) => {
+      const btnRect = noBtn.getBoundingClientRect();
+
+      const btnCenterX = btnRect.left + btnRect.width / 2;
+      const btnCenterY = btnRect.top + btnRect.height / 2;
+
+      const distance = Math.hypot(
+        e.clientX - btnCenterX,
+        e.clientY - btnCenterY
+      );
+
+      if (distance < 120) {
+        if (!soundCooldown) {
+          alertSound.currentTime = 0;
+          alertSound.play();
+          soundCooldown = true;
+
+          setTimeout(() => {
+            soundCooldown = false;
+          }, 600);
+        }
+        moveNo();
+      }
+    });
+
+    noBtn.addEventListener("mouseenter", moveNo);
+    noBtn.addEventListener("mousedown", moveNo);
+    noBtn.addEventListener("touchstart", moveNo);
+
+    yesBtn.addEventListener("click", () => {
+      main.style.display = "none";
+      yesPage.style.display = "block";
+
+      bgMusic.volume = 0.45;
+      bgMusic.play();
+    });
+
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.innerHTML = Math.random() > 0.5 ? "💖" : "💘";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.animationDuration = (Math.random() * 3 + 2) + "s";
+
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 5000);
+    }
+
+    setInterval(createHeart, 250);
+  </script>
+
+</body>
+</html>
